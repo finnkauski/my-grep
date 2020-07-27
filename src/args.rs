@@ -2,10 +2,9 @@ use std::convert::{TryFrom, TryInto};
 use std::env;
 
 pub struct Args {
-    #[allow(dead_code)]
-    filename: String,
+    pub filename: String,
     pub pattern: String,
-    pub files: std::env::Args,
+    pub files: Vec<String>,
 }
 
 impl TryFrom<env::Args> for Args {
@@ -14,7 +13,7 @@ impl TryFrom<env::Args> for Args {
     fn try_from(mut args: env::Args) -> Result<Self, Self::Error> {
         let filename: String = args.next().unwrap(); // SAFETY: Always available
         let pattern: String = args.next().ok_or("No pattern provided")?;
-        let files = args;
+        let files: Vec<String> = args.collect();
         if files.len() == 0 {
             return Err("No files provided");
         }
